@@ -9,6 +9,8 @@ import {
   createModuleSchema,
   createResourceSchema,
   createPdfResourceSchema,
+  saveYouTubeVideoSchema,
+  saveBunnyVideoSchema,
 } from "@/lib/validators/course";
 import { revalidatePath } from "next/cache";
 
@@ -350,6 +352,106 @@ export async function deleteResourceAction(resourceId: string) {
   }
 
   await prisma.resource.delete({ where: { id: resourceId } });
+  revalidatePath(`/instructor/courses/${resource.module.course.slug}`);
+  return { success: true };
+}
+
+// ── Video Resource Actions ─────────────────────────────────────────
+
+/** Save a YouTube (unlisted) video link for a resource. */
+export async function saveYouTubeVideoAction(formData: FormData) {
+  const user = await requireInstructor();
+
+  const parsed = saveYouTubeVideoSchema.safeParse({
+    resourceId: formData.get("resourceId"),
+    youtubeVideoId: formData.get("youtubeVideoId"),
+    durationSec: formData.get("durationSec") || undefined,
+    thumbnailUrl: formData.get("thumbnailUrl") || undefined,
+  });
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues[0].message };
+  }
+
+  const resource = await prisma.resource.findUnique({
+    where: { id: parsed.data.resourceId },
+    include: { module: { include: { course: true } } },
+  });
+  if (!resource || resource.module.course.instructorId !== user.id) {
+    return { success: false, error: "NOT_FOUND" };
+  }
+
+  await prisma.videoResource.upsert({
+    where: { resourceId: parsed.data.resourceId },
+    create: {
+      resourceId: parsed.data.resourceId,
+      provider: "YOUTUBE",
+      youtubeVideoId: parsed.data.youtubeVideoId,
+      thumbnailUrl:
+        parsed.data.thumbnailUrl ||
+        `https://img.youtube.com/vi/${parsed.data.youtubeVideoId}/hqdefault.jpg`,
+      durationSec: parsed.data.durationSec,
+    },
+    update: {
+      provider: "YOUTUBE",
+      youtubeVideoId: parsed.data.youtubeVideoId,
+      thumbnailUrl:
+        parsed.data.thumbnailUrl ||
+        `https://img.youtube.com/vi/${parsed.data.youtubeVideoId}/hqdefault.jpg`,
+      durationSec: parsed.data.durationSec,
+      // clear any previous Bunny fields
+      bunnyLibraryId: null,
+      bunnyVideoId: null,
+    },
+  });
+
+  revalidatePath(`/instructor/courses/${resource.module.course.slug}`);
+  return { success: true };
+}
+
+/** Save a Bunny Stream video for a resource. */
+export async function saveBunnyVideoAction(formData: FormData) {
+  const user = await requireInstructor();
+
+  const parsed = saveBunnyVideoSchema.safeParse({
+    resourceId: formData.get("resourceId"),
+    bunnyLibraryId: formData.get("bunnyLibraryId"),
+    bunnyVideoId: formData.get("bunnyVideoId"),
+    durationSec: formData.get("durationSec") || undefined,
+    thumbnailUrl: formData.get("thumbnailUrl") || undefined,
+  });
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues[0].message };
+  }
+
+  const resource = await prisma.resource.findUnique({
+    where: { id: parsed.data.resourceId },
+    include: { module: { include: { course: true } } },
+  });
+  if (!resource || resource.module.course.instructorId !== user.id) {
+    return { success: false, error: "NOT_FOUND" };
+  }
+
+  await prisma.videoResource.upsert({
+    where: { resourceId: parsed.data.resourceId },
+    create: {
+      resourceId: parsed.data.resourceId,
+      provider: "BUNNY",
+      bunnyLibraryId: parsed.data.bunnyLibraryId,
+      bunnyVideoId: parsed.data.bunnyVideoId,
+      thumbnailUrl: parsed.data.thumbnailUrl,
+      durationSec: parsed.data.durationSec,
+    },
+    update: {
+      provider: "BUNNY",
+      bunnyLibraryId: parsed.data.bunnyLibraryId,
+      bunnyVideoId: parsed.data.bunnyVideoId,
+      thumbnailUrl: parsed.data.thumbnailUrl,
+      durationSec: parsed.data.durationSec,
+      // clear any previous YouTube fields
+      youtubeVideoId: null,
+    },
+  });
+
   revalidatePath(`/instructor/courses/${resource.module.course.slug}`);
   return { success: true };
 }

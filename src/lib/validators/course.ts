@@ -50,3 +50,27 @@ export const createPdfResourceSchema = z.object({
 });
 
 export type CreatePdfResourceInput = z.infer<typeof createPdfResourceSchema>;
+
+// ── Video Resource ─────────────────────────────────────────────────
+
+/** Save a YouTube video resource (provider = YOUTUBE) */
+export const saveYouTubeVideoSchema = z.object({
+  resourceId: z.string().cuid(),
+  youtubeVideoId: z
+    .string()
+    .regex(/^[\w-]{11}$/, "Invalid YouTube video ID"),
+  durationSec: z.coerce.number().int().positive().optional(),
+  thumbnailUrl: z.string().url().optional().or(z.literal("")),
+});
+
+/** Save a Bunny Stream video resource (provider = BUNNY) */
+export const saveBunnyVideoSchema = z.object({
+  resourceId: z.string().cuid(),
+  bunnyLibraryId: z.string().min(1),
+  bunnyVideoId: z.string().min(1),
+  durationSec: z.coerce.number().int().positive().optional(),
+  thumbnailUrl: z.string().url().optional().or(z.literal("")),
+});
+
+export type SaveYouTubeVideoInput = z.infer<typeof saveYouTubeVideoSchema>;
+export type SaveBunnyVideoInput = z.infer<typeof saveBunnyVideoSchema>;

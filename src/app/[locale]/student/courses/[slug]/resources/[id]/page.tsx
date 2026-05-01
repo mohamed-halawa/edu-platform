@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { PdfViewer } from "@/components/pdf-viewer";
+import { VideoPlayer } from "@/components/video-player";
 import { Link } from "@/i18n/navigation";
 import { ArrowLeft } from "lucide-react";
 
@@ -17,12 +18,17 @@ export default async function StudentResourcePage({
     where: { id },
     include: {
       pdfResource: true,
+      videoResource: true,
       module: { include: { course: true } },
     },
   });
 
-  if (!resource || !resource.pdfResource) notFound();
+  if (!resource) notFound();
   if (resource.module.course.slug !== slug) notFound();
+
+  // Must have the relevant sub-resource
+  if (resource.type === "PDF" && !resource.pdfResource) notFound();
+  if (resource.type === "VIDEO" && !resource.videoResource) notFound();
 
   return (
     <div className="animate-fade-in">
@@ -42,12 +48,45 @@ export default async function StudentResourcePage({
         </div>
       </div>
 
-      {/* PDF Viewer */}
-      <PdfViewer
-        resourceId={id}
-        downloadable={resource.pdfResource.downloadable}
-        title={resource.titleEn}
-      />
+      {/* PDF */}
+      {resource.type === "PDF" && resource.pdfResource && (
+        <PdfViewer
+          resourceId={id}
+          downloadable={resource.pdfResource.downloadable}
+          title={resource.titleEn}
+        />
+      )}
+
+      {/* Video */}
+      {resource.type === "VIDEO" && resource.videoResource && (() => {
+        const v = resource.videoResource;
+        if (v.provider === "YOUTUBE" && v.youtubeVideoId) {
+          return (
+            <VideoPlayer
+              provider="YOUTUBE"
+              youtubeVideoId={v.youtubeVideoId}
+              title={resource.titleEn}
+              thumbnailUrl={v.thumbnailUrl}
+            />
+          );
+        }
+        if (v.provider === "BUNNY" && v.bunnyLibraryId && v.bunnyVideoId) {
+          return (
+            <VideoPlayer
+              provider="BUNNY"
+              bunnyLibraryId={v.bunnyLibraryId}
+              bunnyVideoId={v.bunnyVideoId}
+              title={resource.titleEn}
+              thumbnailUrl={v.thumbnailUrl}
+            />
+          );
+        }
+        return (
+          <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-8 text-center text-sm text-amber-700">
+            Video source is not configured yet. Please check back later.
+          </div>
+        );
+      })()}
     </div>
   );
 }

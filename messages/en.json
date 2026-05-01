@@ -1,0 +1,134 @@
+{
+  "common": {
+    "appName": "EduPlatform",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "search": "Search",
+    "noResults": "No results found",
+    "confirm": "Confirm",
+    "close": "Close",
+    "viewAll": "View All",
+    "learnMore": "Learn More",
+    "currency": "EGP",
+    "perMonth": "/month"
+  },
+  "nav": {
+    "home": "Home",
+    "courses": "Courses",
+    "pricing": "Pricing",
+    "about": "About",
+    "login": "Login",
+    "register": "Sign Up",
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "logout": "Logout",
+    "switchLang": "العربية"
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome Back",
+      "subtitle": "Sign in to your account to continue learning",
+      "email": "Email Address",
+      "password": "Password",
+      "submit": "Sign In",
+      "forgotPassword": "Forgot password?",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign up",
+      "orContinueWith": "Or continue with",
+      "google": "Continue with Google",
+      "invalidCredentials": "Invalid email or password",
+      "verifyEmail": "Please verify your email before logging in"
+    },
+    "register": {
+      "title": "Create Account",
+      "subtitle": "Join thousands of students learning online",
+      "name": "Full Name",
+      "email": "Email Address",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "submit": "Create Account",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "success": "Account created! Please check your email to verify.",
+      "passwordMismatch": "Passwords do not match",
+      "emailTaken": "This email is already registered"
+    },
+    "verify": {
+      "title": "Verify Your Email",
+      "subtitle": "We sent a verification link to your email",
+      "success": "Email verified successfully! You can now sign in.",
+      "expired": "This verification link has expired.",
+      "resend": "Resend verification email",
+      "resent": "Verification email sent!"
+    }
+  },
+  "landing": {
+    "hero": {
+      "title": "Learn from Egypt's Best Instructors",
+      "subtitle": "Access premium courses, video lectures, and interactive exams — all in one place",
+      "cta": "Start Learning",
+      "ctaSecondary": "Browse Courses"
+    },
+    "features": {
+      "title": "Everything You Need to Succeed",
+      "videos": {
+        "title": "Video Lectures",
+        "description": "Watch high-quality recorded sessions at your own pace"
+      },
+      "pdfs": {
+        "title": "Study Materials",
+        "description": "Access and download course PDFs and reference materials"
+      },
+      "exams": {
+        "title": "Interactive Exams",
+        "description": "Test your knowledge with auto-graded quizzes and exams"
+      }
+    },
+    "stats": {
+      "students": "Students",
+      "courses": "Courses",
+      "instructors": "Instructors",
+      "hours": "Hours of Content"
+    }
+  },
+  "student": {
+    "dashboard": {
+      "title": "My Dashboard",
+      "activeCourses": "Active Courses",
+      "recentActivity": "Recent Activity",
+      "progress": "Progress",
+      "noCourses": "You haven't enrolled in any courses yet",
+      "browseCourses": "Browse Courses"
+    }
+  },
+  "instructor": {
+    "dashboard": {
+      "title": "Instructor Dashboard",
+      "myCourses": "My Courses",
+      "createCourse": "Create Course",
+      "totalStudents": "Total Students",
+      "totalEarnings": "Total Earnings",
+      "pendingGrading": "Pending Grading"
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Admin Dashboard",
+      "overview": "Overview",
+      "revenue": "Revenue",
+      "instructors": "Instructors",
+      "students": "Students",
+      "payments": "Payments",
+      "payouts": "Payouts",
+      "audit": "Audit Log"
+    }
+  }
+}

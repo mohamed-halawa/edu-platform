@@ -1,0 +1,428 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─── Auth & Users ────────────────────────────────────────────────
+
+enum Role {
+  SUPER_ADMIN
+  INSTRUCTOR
+  STUDENT
+}
+
+model User {
+  id              String    @id @default(cuid())
+  name            String?
+  email           String    @unique
+  passwordHash    String?
+  role            Role      @default(STUDENT)
+  locale          String    @default("ar")
+  emailVerifiedAt DateTime?
+  image           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  accounts           Account[]
+  sessions           Session[]
+  instructorProfile  InstructorProfile?
+  studentProfile     StudentProfile?
+  courses            Course[]            @relation("InstructorCourses")
+  subscriptions      Subscription[]
+  examAttempts       ExamAttempt[]
+  progressRecords    ProgressRecord[]
+  gradedAnswers      Answer[]            @relation("GraderAnswers")
+  auditLogs          AuditLog[]
+  instructorEarnings InstructorEarning[]
+  payouts            Payout[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ─── Profiles ────────────────────────────────────────────────────
+
+model InstructorProfile {
+  userId         String  @id
+  bioEn          String? @db.Text
+  bioAr          String? @db.Text
+  avatarUrl      String?
+  profitSharePct Float?  // null = use platform default
+  payoutDetails  Json?   // bank info, etc.
+  isApproved     Boolean @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("instructor_profiles")
+}
+
+model StudentProfile {
+  userId  String  @id
+  phone   String?
+  country String? @default("EG")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("student_profiles")
+}
+
+// ─── Courses & Content ──────────────────────────────────────────
+
+enum CourseStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum BillingCycle {
+  ONE_TIME
+  MONTHLY
+}
+
+model Course {
+  id            String       @id @default(cuid())
+  instructorId  String
+  slug          String       @unique
+  titleEn       String
+  titleAr       String
+  descriptionEn String?      @db.Text
+  descriptionAr String?      @db.Text
+  coverUrl      String?
+  priceEgp      Float
+  billingCycle  BillingCycle @default(ONE_TIME)
+  status        CourseStatus @default(DRAFT)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  instructor    User           @relation("InstructorCourses", fields: [instructorId], references: [id])
+  modules       Module[]
+  subscriptions Subscription[]
+
+  @@map("courses")
+}
+
+model Module {
+  id       String @id @default(cuid())
+  courseId String
+  order    Int
+  titleEn  String
+  titleAr  String
+
+  course    Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  resources Resource[]
+
+  @@map("modules")
+}
+
+enum ResourceType {
+  PDF
+  VIDEO
+  EXAM
+}
+
+model Resource {
+  id       String       @id @default(cuid())
+  moduleId String
+  order    Int
+  type     ResourceType
+  titleEn  String
+  titleAr  String
+
+  module        Module         @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  pdfResource   PdfResource?
+  videoResource VideoResource?
+  exam          Exam?
+
+  @@map("resources")
+}
+
+model PdfResource {
+  resourceId   String  @id
+  bunnyFileId  String
+  sizeBytes    Int
+  pageCount    Int?
+  downloadable Boolean @default(false)
+
+  resource Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  @@map("pdf_resources")
+}
+
+model VideoResource {
+  resourceId     String @id
+  bunnyLibraryId String
+  bunnyVideoId   String
+  durationSec    Int?
+  thumbnailUrl   String?
+  chapters       Json?  // [{start: number, titleEn: string, titleAr: string}]
+
+  resource        Resource         @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  progressRecords ProgressRecord[]
+
+  @@map("video_resources")
+}
+
+// ─── Exams ──────────────────────────────────────────────────────
+
+model Exam {
+  id               String  @id @default(cuid())
+  resourceId       String  @unique
+  timeLimitSec     Int?
+  maxAttempts      Int     @default(1)
+  passThresholdPct Float?
+  shuffleQuestions Boolean @default(false)
+  showAnswersAfter String  @default("SUBMISSION") // SUBMISSION | GRADING | NEVER
+
+  resource Resource      @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  questions Question[]
+  attempts  ExamAttempt[]
+
+  @@map("exams")
+}
+
+enum QuestionType {
+  MCQ_SINGLE
+  MCQ_MULTI
+  TRUE_FALSE
+  SHORT
+  ESSAY
+}
+
+model Question {
+  id               String       @id @default(cuid())
+  examId           String
+  order            Int
+  type             QuestionType
+  promptEn         String       @db.Text
+  promptAr         String       @db.Text
+  points           Float        @default(1)
+  correctAnswerJson Json?       // for SHORT: {answer: string, matchMode: "exact"|"regex"}
+
+  exam    Exam             @relation(fields: [examId], references: [id], onDelete: Cascade)
+  options QuestionOption[]
+  answers Answer[]
+
+  @@map("questions")
+}
+
+model QuestionOption {
+  id         String  @id @default(cuid())
+  questionId String
+  order      Int
+  textEn     String
+  textAr     String
+  isCorrect  Boolean @default(false)
+
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@map("question_options")
+}
+
+enum AttemptStatus {
+  IN_PROGRESS
+  SUBMITTED
+  GRADED
+}
+
+model ExamAttempt {
+  id          String        @id @default(cuid())
+  examId      String
+  studentId   String
+  startedAt   DateTime      @default(now())
+  submittedAt DateTime?
+  scorePct    Float?
+  status      AttemptStatus @default(IN_PROGRESS)
+
+  exam    Exam     @relation(fields: [examId], references: [id], onDelete: Cascade)
+  student User     @relation(fields: [studentId], references: [id])
+  answers Answer[]
+
+  @@map("exam_attempts")
+}
+
+model Answer {
+  id            String @id @default(cuid())
+  attemptId     String
+  questionId    String
+  responseJson  Json   // {selectedOptions: string[]} | {text: string} | {value: boolean}
+  awardedPoints Float?
+  graderId      String?
+
+  attempt  ExamAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question Question    @relation(fields: [questionId], references: [id])
+  grader   User?       @relation("GraderAnswers", fields: [graderId], references: [id])
+
+  @@map("answers")
+}
+
+// ─── Subscriptions & Payments ───────────────────────────────────
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELLED
+  EXPIRED
+}
+
+model Subscription {
+  id               String             @id @default(cuid())
+  studentId        String
+  courseId         String
+  status           SubscriptionStatus @default(ACTIVE)
+  currentPeriodEnd DateTime?
+  paymobCardToken  String?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  student  User      @relation(fields: [studentId], references: [id])
+  course   Course    @relation(fields: [courseId], references: [id])
+  payments Payment[]
+
+  @@unique([studentId, courseId])
+  @@map("subscriptions")
+}
+
+model Payment {
+  id              String   @id @default(cuid())
+  subscriptionId  String
+  amountEgp       Float
+  status          String   // pending, success, failed, refunded
+  paymobOrderId   String?
+  paymobTxnId     String?  @unique
+  rawWebhookJson  Json?
+  processedAt     DateTime?
+  createdAt       DateTime @default(now())
+
+  subscription      Subscription        @relation(fields: [subscriptionId], references: [id])
+  instructorEarning InstructorEarning?
+
+  @@map("payments")
+}
+
+// ─── Progress ───────────────────────────────────────────────────
+
+model ProgressRecord {
+  studentId       String
+  videoResourceId String
+  lastPositionSec Int      @default(0)
+  watchedSec      Int      @default(0)
+  completedAt     DateTime?
+  updatedAt       DateTime @updatedAt
+
+  student       User          @relation(fields: [studentId], references: [id])
+  videoResource VideoResource @relation(fields: [videoResourceId], references: [resourceId])
+
+  @@id([studentId, videoResourceId])
+  @@map("progress_records")
+}
+
+// ─── Platform Config & Financials ───────────────────────────────
+
+model PlatformConfig {
+  id                    String @id @default("singleton")
+  defaultProfitSharePct Float  @default(70) // instructor gets 70% by default
+  currency              String @default("EGP")
+  platformName          String @default("EduPlatform")
+
+  @@map("platform_config")
+}
+
+model InstructorEarning {
+  id             String @id @default(cuid())
+  instructorId   String
+  paymentId      String @unique
+  amountEgp      Float
+  platformFeeEgp Float
+  status         String @default("pending") // pending, paid, reversed
+
+  instructor User    @relation(fields: [instructorId], references: [id])
+  payment    Payment @relation(fields: [paymentId], references: [id])
+
+  @@map("instructor_earnings")
+}
+
+enum PayoutStatus {
+  PENDING
+  APPROVED
+  PAID
+}
+
+model Payout {
+  id           String       @id @default(cuid())
+  instructorId String
+  periodStart  DateTime
+  periodEnd    DateTime
+  totalEgp     Float
+  status       PayoutStatus @default(PENDING)
+  processedAt  DateTime?
+  createdAt    DateTime     @default(now())
+
+  instructor User @relation(fields: [instructorId], references: [id])
+
+  @@map("payouts")
+}
+
+// ─── Audit ──────────────────────────────────────────────────────
+
+model AuditLog {
+  id           String   @id @default(cuid())
+  actorId      String?
+  action       String
+  entityType   String
+  entityId     String?
+  metadataJson Json?
+  createdAt    DateTime @default(now())
+
+  actor User? @relation(fields: [actorId], references: [id])
+
+  @@index([entityType, entityId])
+  @@index([actorId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}

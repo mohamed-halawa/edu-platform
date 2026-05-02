@@ -59,8 +59,8 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
           <div className="mt-14 flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
             {[
               { icon: Users, text: "+10,000 طالب نشط" },
-              { icon: Star,  text: "تقييم 4.9/5" },
-              { icon: Shield,text: "محتوى موثوق 100%" },
+              { icon: Star, text: "تقييم 4.9/5" },
+              { icon: Shield, text: "محتوى موثوق 100%" },
             ].map(({ icon: Icon, text }) => (
               <div key={text} className="flex items-center gap-2">
                 <Icon className="h-4 w-4 text-indigo-500" />
@@ -68,45 +68,6 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
               </div>
             ))}
           </div>
-        </div>
-
-        {/* Dashboard mockup */}
-        <div className="relative mx-auto mt-20 max-w-4xl px-4">
-          <div className="relative rounded-2xl border border-border bg-card p-1 shadow-2xl shadow-black/10 dark:shadow-black/60">
-            {/* Browser bar */}
-            <div className="flex items-center gap-2 rounded-t-xl border-b border-border bg-muted/50 px-4 py-3">
-              <div className="h-3 w-3 rounded-full bg-red-400/70" />
-              <div className="h-3 w-3 rounded-full bg-amber-400/70" />
-              <div className="h-3 w-3 rounded-full bg-emerald-400/70" />
-              <div className="ms-3 h-5 flex-1 rounded-md bg-border" />
-            </div>
-            {/* Mock content */}
-            <div className="rounded-b-xl bg-muted/30 p-6">
-              <div className="grid grid-cols-3 gap-3 mb-4">
-                {[
-                  { label: "الدورات النشطة", value: "12" },
-                  { label: "الطلاب",         value: "2,840" },
-                  { label: "معدل الإتمام",   value: "94%" },
-                ].map((s) => (
-                  <div key={s.label} className="rounded-xl border border-border bg-card p-4 text-center">
-                    <div className="text-2xl font-bold bg-gradient-to-r from-indigo-500 to-violet-500 bg-clip-text text-transparent">{s.value}</div>
-                    <div className="mt-1 text-xs text-muted-foreground">{s.label}</div>
-                  </div>
-                ))}
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                {["Python للمبتدئين", "تصميم UI/UX", "الذكاء الاصطناعي", "تطوير الويب"].map((c) => (
-                  <div key={c} className="flex items-center gap-3 rounded-xl border border-border bg-card p-3">
-                    <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-indigo-500/20 to-violet-500/20 flex items-center justify-center">
-                      <BookOpen className="h-4 w-4 text-indigo-500" />
-                    </div>
-                    <div className="text-sm font-medium text-foreground">{c}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 h-24 w-3/4 bg-indigo-500/10 blur-[60px] rounded-full" />
         </div>
       </section>
 
@@ -116,8 +77,8 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
           <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
             {[
               { value: "10,000+", label: t("stats.students") },
-              { value: "500+",    label: t("stats.courses") },
-              { value: "100+",    label: t("stats.instructors") },
+              { value: "500+", label: t("stats.courses") },
+              { value: "100+", label: t("stats.instructors") },
               { value: "50,000+", label: t("stats.hours") },
             ].map((s) => (
               <div key={s.label} className="text-center">
@@ -148,9 +109,9 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
 
           <div className="grid gap-6 md:grid-cols-3">
             {[
-              { icon: Play,          title: t("features.videos.title"),  desc: t("features.videos.description"),  gradient: "from-indigo-500 to-blue-500",   shadow: "shadow-indigo-500/20", badge: "YouTube & Bunny"  },
-              { icon: BookOpen,      title: t("features.pdfs.title"),    desc: t("features.pdfs.description"),    gradient: "from-violet-500 to-purple-600", shadow: "shadow-violet-500/20", badge: "محمي بالاشتراك" },
-              { icon: ClipboardCheck,title: t("features.exams.title"),   desc: t("features.exams.description"),   gradient: "from-pink-500 to-rose-500",     shadow: "shadow-pink-500/20",   badge: "تصحيح تلقائي"   },
+              { icon: Play, title: t("features.videos.title"), desc: t("features.videos.description"), gradient: "from-indigo-500 to-blue-500", shadow: "shadow-indigo-500/20", badge: "YouTube & Bunny" },
+              { icon: BookOpen, title: t("features.pdfs.title"), desc: t("features.pdfs.description"), gradient: "from-violet-500 to-purple-600", shadow: "shadow-violet-500/20", badge: "محمي بالاشتراك" },
+              { icon: ClipboardCheck, title: t("features.exams.title"), desc: t("features.exams.description"), gradient: "from-pink-500 to-rose-500", shadow: "shadow-pink-500/20", badge: "تصحيح تلقائي" },
             ].map(({ icon: Icon, title, desc, gradient, shadow, badge }) => (
               <div key={title} className="group relative rounded-2xl border border-border bg-card p-8 transition-all duration-300 hover:border-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/5 hover:-translate-y-1">
                 <div className={`absolute inset-x-0 top-0 h-px rounded-t-2xl bg-gradient-to-r ${gradient} opacity-50`} />
@@ -180,9 +141,9 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
           </div>
           <div className="grid gap-8 md:grid-cols-3">
             {[
-              { step: "01", title: "أنشئ حسابك",    desc: "سجّل مجاناً في دقيقة واحدة باستخدام بريدك الإلكتروني أو حساب جوجل.", color: "from-indigo-500 to-indigo-600" },
-              { step: "02", title: "اختر دورتك",    desc: "تصفّح مئات الدورات من أفضل المدرسين في مصر واشترك في ما يناسبك.",      color: "from-violet-500 to-violet-600" },
-              { step: "03", title: "تعلّم وتقدّم",  desc: "شاهد المحاضرات، اقرأ المواد، وأجرِ الاختبارات في أي وقت ومن أي مكان.", color: "from-pink-500 to-pink-600"     },
+              { step: "01", title: "أنشئ حسابك", desc: "سجّل مجاناً في دقيقة واحدة باستخدام بريدك الإلكتروني أو حساب جوجل.", color: "from-indigo-500 to-indigo-600" },
+              { step: "02", title: "اختر دورتك", desc: "تصفّح مئات الدورات من أفضل المدرسين في مصر واشترك في ما يناسبك.", color: "from-violet-500 to-violet-600" },
+              { step: "03", title: "تعلّم وتقدّم", desc: "شاهد المحاضرات، اقرأ المواد، وأجرِ الاختبارات في أي وقت ومن أي مكان.", color: "from-pink-500 to-pink-600" },
             ].map(({ step, title, desc, color }) => (
               <div key={step} className="flex flex-col items-center text-center">
                 <div className={`flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${color} shadow-2xl mb-6`}>
@@ -204,9 +165,9 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
           </div>
           <div className="grid gap-6 md:grid-cols-3">
             {[
-              { name: "أحمد محمود", role: "مطور برمجيات",  text: "المنصة غيّرت مسيرتي المهنية تماماً. المحتوى عالي الجودة والمدرسون متميزون." },
-              { name: "سارة عبدالله",role: "مصممة جرافيك", text: "تجربة تعلم لا مثيل لها. الوصول للمحتوى سهل وسريع، والاختبارات التفاعلية رائعة." },
-              { name: "محمد علي",    role: "طالب هندسة",   text: "أفضل استثمار في حياتي. تعلمت في شهر ما لم أتعلمه في سنة." },
+              { name: "أحمد محمود", role: "مطور برمجيات", text: "المنصة غيّرت مسيرتي المهنية تماماً. المحتوى عالي الجودة والمدرسون متميزون." },
+              { name: "سارة عبدالله", role: "مصممة جرافيك", text: "تجربة تعلم لا مثيل لها. الوصول للمحتوى سهل وسريع، والاختبارات التفاعلية رائعة." },
+              { name: "محمد علي", role: "طالب هندسة", text: "أفضل استثمار في حياتي. تعلمت في شهر ما لم أتعلمه في سنة." },
             ].map(({ name, role, text }) => (
               <div key={name} className="rounded-2xl border border-border bg-card p-8 transition-all hover:border-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/5">
                 <div className="flex gap-1 mb-4">
@@ -238,8 +199,8 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
           <p className="mt-4 text-muted-foreground max-w-xl mx-auto">ادفع مرة واحدة للوصول الدائم، أو اشترك شهرياً للحصول على أفضل قيمة.</p>
           <div className="mt-12 grid gap-6 md:grid-cols-2 max-w-2xl mx-auto">
             {[
-              { label: "دفعة واحدة",   sub: "وصول دائم للدورة",    features: ["وصول مدى الحياة","تحميل المواد","شهادة إتمام"],          border: "border-indigo-500/30", bg: "bg-indigo-500/5", cta: "ابدأ الآن" },
-              { label: "اشتراك شهري",  sub: "وصول لجميع الدورات", features: ["جميع الدورات","محتوى جديد باستمرار","دعم مباشر"],       border: "border-violet-500/30", bg: "bg-violet-500/5", cta: "اشترك الآن" },
+              { label: "دفعة واحدة", sub: "وصول دائم للدورة", features: ["وصول مدى الحياة", "تحميل المواد", "شهادة إتمام"], border: "border-indigo-500/30", bg: "bg-indigo-500/5", cta: "ابدأ الآن" },
+              { label: "اشتراك شهري", sub: "وصول لجميع الدورات", features: ["جميع الدورات", "محتوى جديد باستمرار", "دعم مباشر"], border: "border-violet-500/30", bg: "bg-violet-500/5", cta: "اشترك الآن" },
             ].map(({ label, sub, features, border, bg, cta }) => (
               <div key={label} className={`rounded-2xl border ${border} ${bg} p-8 text-start`}>
                 <h3 className="text-xl font-bold text-foreground">{label}</h3>
@@ -298,9 +259,9 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
               <p className="text-sm text-muted-foreground leading-relaxed">منصة تعليمية متكاملة تجمع بين أفضل المدرسين وأحدث أدوات التعلم.</p>
             </div>
             {[
-              { title: "المنصة",  links: ["الدورات","الأسعار","لوحة التحكم","الاختبارات"] },
-              { title: "الشركة",  links: ["عنّا","تواصل معنا","سياسة الخصوصية","الشروط والأحكام"] },
-              { title: "الدعم",   links: ["مركز المساعدة","الأسئلة الشائعة","الإبلاغ عن مشكلة"] },
+              { title: "المنصة", links: ["الدورات", "الأسعار", "لوحة التحكم", "الاختبارات"] },
+              { title: "الشركة", links: ["عنّا", "تواصل معنا", "سياسة الخصوصية", "الشروط والأحكام"] },
+              { title: "الدعم", links: ["مركز المساعدة", "الأسئلة الشائعة", "الإبلاغ عن مشكلة"] },
             ].map(({ title, links }) => (
               <div key={title}>
                 <h4 className="mb-4 text-sm font-semibold text-foreground">{title}</h4>

@@ -21,7 +21,7 @@ export function Navbar() {
     <header
       className={`sticky top-0 z-50 w-full transition-all duration-300 ${
         scrolled
-          ? "border-b border-white/10 bg-[#0a0b0f]/80 backdrop-blur-xl shadow-lg shadow-black/20"
+          ? "border-b border-border bg-background/80 backdrop-blur-xl shadow-sm"
           : "bg-transparent"
       }`}
     >
@@ -47,7 +47,7 @@ export function Navbar() {
             <Link
               key={label}
               href={href}
-              className="rounded-lg px-4 py-2 text-sm font-medium text-slate-400 transition-colors hover:text-white"
+              className="rounded-lg px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
             >
               {label}
             </Link>
@@ -59,7 +59,7 @@ export function Navbar() {
           <LocaleSwitcher />
           <Link
             href="/auth/login"
-            className="rounded-lg px-4 py-2 text-sm font-medium text-slate-400 transition-colors hover:text-white"
+            className="rounded-lg px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
             {t("login")}
           </Link>
@@ -83,7 +83,7 @@ export function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden border-t border-white/10 bg-[#0a0b0f]/95 backdrop-blur-xl">
+        <div className="md:hidden border-t border-border bg-background/95 backdrop-blur-xl">
           <div className="flex flex-col gap-1 px-6 py-4">
             {[
               { label: t("home"), href: "/" },
@@ -94,7 +94,7 @@ export function Navbar() {
                 key={label}
                 href={href}
                 onClick={() => setIsOpen(false)}
-                className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-400 transition-colors hover:bg-white/5 hover:text-white"
+                className="rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
               >
                 {label}
               </Link>
@@ -104,7 +104,7 @@ export function Navbar() {
               <Link
                 href="/auth/login"
                 onClick={() => setIsOpen(false)}
-                className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-400 transition-colors hover:bg-white/5 hover:text-white"
+                className="rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
               >
                 {t("login")}
               </Link>

@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { LocaleSwitcher } from "@/components/locale-switcher";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { GraduationCap, Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 
@@ -56,6 +57,7 @@ export function Navbar() {
 
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center gap-3">
+          <ThemeToggle />
           <LocaleSwitcher />
           <Link
             href="/auth/login"
@@ -100,7 +102,10 @@ export function Navbar() {
               </Link>
             ))}
             <div className="mt-2 pt-2 border-t border-white/10 flex flex-col gap-2">
-              <LocaleSwitcher />
+              <div className="flex items-center justify-between px-1 mb-1">
+                <ThemeToggle />
+                <LocaleSwitcher />
+              </div>
               <Link
                 href="/auth/login"
                 onClick={() => setIsOpen(false)}

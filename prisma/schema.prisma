@@ -19,6 +19,11 @@ enum Role {
   STUDENT
 }
 
+enum VideoProvider {
+  BUNNY
+  YOUTUBE
+}
+
 model User {
   id              String    @id @default(cuid())
   name            String?
@@ -195,12 +200,21 @@ model PdfResource {
 }
 
 model VideoResource {
-  resourceId     String @id
-  bunnyLibraryId String
-  bunnyVideoId   String
-  durationSec    Int?
-  thumbnailUrl   String?
-  chapters       Json?  // [{start: number, titleEn: string, titleAr: string}]
+  resourceId String        @id
+  provider   VideoProvider @default(BUNNY)
+
+  // Bunny Stream fields (required when provider = BUNNY)
+  bunnyLibraryId String?
+  bunnyVideoId   String?
+
+  // YouTube fields (required when provider = YOUTUBE)
+  // Store the video ID only (e.g. "dQw4w9WgXcQ"), not the full URL
+  youtubeVideoId String?
+
+  // Shared metadata
+  durationSec  Int?
+  thumbnailUrl String?
+  chapters     Json? // [{start: number, titleEn: string, titleAr: string}]
 
   resource        Resource         @relation(fields: [resourceId], references: [id], onDelete: Cascade)
   progressRecords ProgressRecord[]

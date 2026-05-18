@@ -3,7 +3,7 @@
     "appName": "EduPlatform",
     "loading": "Loading...",
     "error": "An error occurred",
-    "save": "Save",
+    "save": "Save Changes",
     "cancel": "Cancel",
     "delete": "Delete",
     "edit": "Edit",
@@ -18,7 +18,17 @@
     "viewAll": "View All",
     "learnMore": "Learn More",
     "currency": "EGP",
-    "perMonth": "/month"
+    "perMonth": "/month",
+    "publish": "Publish",
+    "unpublish": "Unpublish",
+    "published": "Published",
+    "draft": "Draft",
+    "upload": "Upload",
+    "uploading": "Uploading...",
+    "actions": "Actions",
+    "confirmDelete": "Are you sure you want to delete this?",
+    "yes": "Yes, delete",
+    "saving": "Saving..."
   },
   "nav": {
     "home": "Home",
@@ -107,16 +117,82 @@
       "progress": "Progress",
       "noCourses": "You haven't enrolled in any courses yet",
       "browseCourses": "Browse Courses"
+    },
+    "courses": {
+      "title": "My Courses",
+      "enrolled": "Enrolled",
+      "continue": "Continue Learning",
+      "completed": "Completed",
+      "progress": "Progress",
+      "modules": "Modules",
+      "resources": "Resources"
     }
   },
   "instructor": {
     "dashboard": {
       "title": "Instructor Dashboard",
       "myCourses": "My Courses",
-      "createCourse": "Create Course",
+      "createCourse": "New Course",
       "totalStudents": "Total Students",
       "totalEarnings": "Total Earnings",
       "pendingGrading": "Pending Grading"
+    },
+    "courses": {
+      "title": "My Courses",
+      "empty": "You haven't created any courses yet",
+      "createFirst": "Create your first course",
+      "students": "students",
+      "modules": "modules",
+      "editCourse": "Edit Course",
+      "manageCourse": "Manage Course",
+      "viewCourse": "View as Student"
+    },
+    "course": {
+      "new": {
+        "title": "Create New Course",
+        "subtitle": "Fill in the details below to create your course"
+      },
+      "edit": {
+        "title": "Edit Course",
+        "subtitle": "Update your course details"
+      },
+      "form": {
+        "titleEn": "Course Title (English)",
+        "titleAr": "Course Title (Arabic)",
+        "descriptionEn": "Description (English)",
+        "descriptionAr": "Description (Arabic)",
+        "price": "Price (EGP)",
+        "billingCycle": "Billing Cycle",
+        "oneTime": "One-Time Payment",
+        "monthly": "Monthly Subscription",
+        "coverUrl": "Cover Image URL",
+        "coverUrlHint": "Paste a direct image URL",
+        "submit": "Create Course",
+        "update": "Save Changes",
+        "titleEnPlaceholder": "e.g. Complete Python Bootcamp",
+        "titleArPlaceholder": "مثال: دورة بايثون الشاملة",
+        "pricePlaceholder": "e.g. 500"
+      }
+    },
+    "module": {
+      "new": "Add Module",
+      "titleEn": "Module Title (English)",
+      "titleAr": "Module Title (Arabic)",
+      "addResource": "Add Resource",
+      "noResources": "No resources yet"
+    },
+    "resource": {
+      "new": "Add Resource",
+      "titleEn": "Resource Title (English)",
+      "titleAr": "Resource Title (Arabic)",
+      "type": "Resource Type",
+      "pdf": "PDF Document",
+      "video": "Video Lecture",
+      "exam": "Exam / Quiz",
+      "uploadPdf": "Upload PDF",
+      "uploadHint": "PDF files up to 50 MB",
+      "downloadable": "Allow students to download this PDF",
+      "uploadSuccess": "PDF uploaded successfully"
     }
   },
   "admin": {

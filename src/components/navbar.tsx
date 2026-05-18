@@ -3,63 +3,80 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { LocaleSwitcher } from "@/components/locale-switcher";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { GraduationCap, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export function Navbar() {
   const t = useTranslations("nav");
   const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between">
+    <header
+      className={`sticky top-0 z-50 w-full transition-all duration-300 ${
+        scrolled
+          ? "border-b border-border bg-background/80 backdrop-blur-xl shadow-sm"
+          : "bg-transparent"
+      }`}
+    >
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary shadow-lg shadow-primary/25 transition-transform group-hover:scale-105">
-            <GraduationCap className="h-5 w-5 text-primary-foreground" />
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 shadow-lg shadow-indigo-500/30 transition-transform group-hover:scale-105">
+            <GraduationCap className="h-5 w-5 text-white" />
           </div>
-          <span className="text-lg font-bold tracking-tight gradient-text">
+          <span className="text-lg font-bold tracking-tight bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
             EduPlatform
           </span>
         </Link>
 
-        {/* Desktop Nav */}
+        {/* Desktop Nav Links */}
         <nav className="hidden md:flex items-center gap-1">
-          <Link
-            href="/"
-            className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-          >
-            {t("home")}
-          </Link>
-          <Link
-            href="/"
-            className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-          >
-            {t("courses")}
-          </Link>
+          {[
+            { label: t("home"), href: "/" },
+            { label: t("courses"), href: "/" },
+            { label: "الأسعار", href: "/" },
+            { label: t("about"), href: "/" },
+          ].map(({ label, href }) => (
+            <Link
+              key={label}
+              href={href}
+              className="rounded-lg px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+            >
+              {label}
+            </Link>
+          ))}
         </nav>
 
         {/* Desktop Actions */}
-        <div className="hidden md:flex items-center gap-2">
+        <div className="hidden md:flex items-center gap-3">
+          <ThemeToggle />
           <LocaleSwitcher />
           <Link
             href="/auth/login"
-            className="rounded-lg px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+            className="rounded-lg px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
             {t("login")}
           </Link>
           <Link
             href="/auth/register"
-            className="rounded-xl bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:shadow-primary/40 hover:brightness-110"
+            className="rounded-full bg-gradient-to-r from-indigo-500 via-violet-500 to-pink-500 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 transition-all hover:shadow-indigo-500/50 hover:scale-105"
           >
             {t("register")}
           </Link>
         </div>
 
-        {/* Mobile Menu Button */}
+        {/* Mobile toggle */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden rounded-lg p-2 text-muted-foreground hover:bg-accent"
+          className="md:hidden rounded-lg p-2 text-slate-400 hover:text-white transition-colors"
           aria-label="Toggle menu"
         >
           {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -68,38 +85,42 @@ export function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden border-t border-border/40 bg-background/95 backdrop-blur-xl animate-fade-in">
-          <div className="container py-4 flex flex-col gap-2">
-            <Link
-              href="/"
-              className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent"
-              onClick={() => setIsOpen(false)}
-            >
-              {t("home")}
-            </Link>
-            <Link
-              href="/"
-              className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent"
-              onClick={() => setIsOpen(false)}
-            >
-              {t("courses")}
-            </Link>
-            <hr className="border-border/40" />
-            <LocaleSwitcher />
-            <Link
-              href="/auth/login"
-              className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent"
-              onClick={() => setIsOpen(false)}
-            >
-              {t("login")}
-            </Link>
-            <Link
-              href="/auth/register"
-              className="rounded-xl bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground text-center shadow-lg shadow-primary/25"
-              onClick={() => setIsOpen(false)}
-            >
-              {t("register")}
-            </Link>
+        <div className="md:hidden border-t border-border bg-background/95 backdrop-blur-xl">
+          <div className="flex flex-col gap-1 px-6 py-4">
+            {[
+              { label: t("home"), href: "/" },
+              { label: t("courses"), href: "/" },
+              { label: "الأسعار", href: "/" },
+            ].map(({ label, href }) => (
+              <Link
+                key={label}
+                href={href}
+                onClick={() => setIsOpen(false)}
+                className="rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+              >
+                {label}
+              </Link>
+            ))}
+            <div className="mt-2 pt-2 border-t border-white/10 flex flex-col gap-2">
+              <div className="flex items-center justify-between px-1 mb-1">
+                <ThemeToggle />
+                <LocaleSwitcher />
+              </div>
+              <Link
+                href="/auth/login"
+                onClick={() => setIsOpen(false)}
+                className="rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+              >
+                {t("login")}
+              </Link>
+              <Link
+                href="/auth/register"
+                onClick={() => setIsOpen(false)}
+                className="rounded-full bg-gradient-to-r from-indigo-500 via-violet-500 to-pink-500 px-4 py-2.5 text-sm font-semibold text-white text-center"
+              >
+                {t("register")}
+              </Link>
+            </div>
           </div>
         </div>
       )}
